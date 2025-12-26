@@ -205,3 +205,9 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+demo_21q3
+drug_21q3
+indi_21q3
+outc_21q3
+reac_21q3
+ther_21q3
