@@ -216,4 +216,4 @@ faers_ascii20/*
 
 # FAERS raw data (never commit)
 faers_ascii_*/
-
+.env 

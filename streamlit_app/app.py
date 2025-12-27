@@ -4,6 +4,7 @@ import tempfile
 import json
 import pandas as pd
 import os
+import sys
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
@@ -12,26 +13,44 @@ from langchain_core.output_parsers import JsonOutputParser
 import xgboost as xgb
 
 # ================================
+# Configuration
+# ================================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODELS_DIR = os.path.join(BASE_DIR, "..", "models")
+DATA_DIR = os.path.join(BASE_DIR, "..", "data")
+
+# ================================
 # Load Model + Metadata
 # ================================
 @st.cache_resource
 def load_assets():
-    model = xgb.XGBClassifier()
-    model.load_model("models/xgb_severity_model.json")
+    """Load XGBoost model and all encoder mappings"""
+    try:
+        model = xgb.XGBClassifier()
+        model_path = os.path.join(MODELS_DIR, "xgb_severity_model.json")
+        model.load_model(model_path)
 
-    with open("models/label_encoders_mapping.json") as f:
-        encoders = json.load(f)
+        encoders_path = os.path.join(MODELS_DIR, "label_encoders_mapping.json")
+        with open(encoders_path) as f:
+            encoders = json.load(f)
 
-    with open("models/model_features.json") as f:
-        feature_order = json.load(f)
+        features_path = os.path.join(MODELS_DIR, "model_features.json")
+        with open(features_path) as f:
+            feature_order = json.load(f)
 
-    # Create reverse mappings for all encoders
-    prod_ai_reverse = {v: int(k) for k, v in encoders["prod_ai"].items()}
-    indi_pt_reverse = {v: int(k) for k, v in encoders["indi_pt"].items()}
-    pt_reverse = {v: int(k) for k, v in encoders["pt"].items()}
-    role_cod_reverse = {v: int(k) for k, v in encoders["role_cod"].items()}
+        # Create reverse mappings for all encoders
+        prod_ai_reverse = {v: int(k) for k, v in encoders["prod_ai"].items()}
+        indi_pt_reverse = {v: int(k) for k, v in encoders["indi_pt"].items()}
+        pt_reverse = {v: int(k) for k, v in encoders["pt"].items()}
+        role_cod_reverse = {v: int(k) for k, v in encoders["role_cod"].items()}
 
-    return model, encoders, feature_order, prod_ai_reverse, indi_pt_reverse, pt_reverse, role_cod_reverse
+        return model, encoders, feature_order, prod_ai_reverse, indi_pt_reverse, pt_reverse, role_cod_reverse
+    
+    except Exception as e:
+        st.error(f"❌ Error loading models: {str(e)}")
+        st.error(f"Models directory: {MODELS_DIR}")
+        st.error(f"Files in directory: {os.listdir(MODELS_DIR) if os.path.exists(MODELS_DIR) else 'Directory not found'}")
+        sys.exit(1)
 
 
 model, encoders, FEATURE_ORDER, PROD_AI_MAP, INDI_PT_MAP, PT_MAP, ROLE_COD_MAP = load_assets()
@@ -41,20 +60,31 @@ model, encoders, FEATURE_ORDER, PROD_AI_MAP, INDI_PT_MAP, PT_MAP, ROLE_COD_MAP =
 # ================================
 @st.cache_resource
 def load_whisper():
-    return WhisperModel("base", device="cpu", compute_type="int8")
+    """Load Whisper model for audio transcription"""
+    try:
+        return WhisperModel("base", device="cpu", compute_type="int8")
+    except Exception as e:
+        st.error(f"❌ Error loading Whisper model: {str(e)}")
+        sys.exit(1)
 
 whisper_model = load_whisper()
 
 # ================================
 # Gemini LLM
 # ================================
-
 from dotenv import load_dotenv
 load_dotenv()
 
+# Verify API key is loaded
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    st.error("❌ GEMINI_API_KEY not found in environment variables!")
+    st.info("Please set GEMINI_API_KEY in your .env file")
+    st.stop()
+
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    google_api_key=os.getenv("GEMINI_API_KEY"),
+    model="gemini-2.0-flash-exp",
+    google_api_key=GEMINI_API_KEY,
     temperature=0
 )
 
@@ -89,26 +119,31 @@ Valid Reactions:
     input_variables=["conversation", "drug_list", "indi_list", "pt_list"]
 )
 
-
 parser = JsonOutputParser()
 
 # ================================
 # Entity Extraction
 # ================================
 def extract_entities(text):
-    chain = prompt | llm | parser
-    entities = chain.invoke({
-        "conversation": text,
-        "drug_list": list(PROD_AI_MAP.keys()),
-        "indi_list": list(INDI_PT_MAP.keys()),
-        "pt_list": list(PT_MAP.keys())
-    })
-    return entities
+    """Extract medical entities from text using Gemini LLM"""
+    try:
+        chain = prompt | llm | parser
+        entities = chain.invoke({
+            "conversation": text,
+            "drug_list": list(PROD_AI_MAP.keys()),
+            "indi_list": list(INDI_PT_MAP.keys()),
+            "pt_list": list(PT_MAP.keys())
+        })
+        return entities
+    except Exception as e:
+        st.error(f"❌ Error extracting entities: {str(e)}")
+        return {"drugs": [], "indications": [], "reactions": []}
 
 # ================================
 # Feature Engineering
 # ================================
 def build_features(entities):
+    """Build feature matrix from extracted entities"""
     rows = []
     drug_stats = encoders["drug_stats"]
 
@@ -155,11 +190,35 @@ st.title("🎧 Medical Audio Risk Detector")
 
 st.markdown("""
 Upload an audio file containing a medical conversation. The app will:
-1. Transcribe the audio
-2. Extract medical entities (drugs, indications, reactions)
-3. Predict adverse event severity
+1. 🎤 Transcribe the audio using Whisper
+2. 🧠 Extract medical entities (drugs, indications, reactions) using Gemini AI
+3. 📊 Predict adverse event severity using XGBoost
 """)
 
+# Sidebar with info
+with st.sidebar:
+    st.header("ℹ️ Information")
+    st.write(f"**Supported Drugs:** {len(PROD_AI_MAP)}")
+    st.write(f"**Supported Indications:** {len(INDI_PT_MAP)}")
+    st.write(f"**Supported Reactions:** {len(PT_MAP)}")
+    st.write(f"**Model Features:** {len(FEATURE_ORDER)}")
+    
+    st.divider()
+    
+    st.header("📁 Sample Data")
+    if os.path.exists(DATA_DIR):
+        audio_files = [f for f in os.listdir(DATA_DIR) if f.endswith(('.mp3', '.wav', '.m4a'))]
+        if audio_files:
+            st.write("Available audio files in data folder:")
+            for audio in audio_files[:5]:  # Show first 5
+                st.text(f"• {audio}")
+        else:
+            st.info("No audio files found in data folder")
+    
+    st.divider()
+    st.caption("Powered by Whisper, Gemini AI & XGBoost")
+
+# Main content
 audio_file = st.file_uploader("Upload an audio file", type=["mp3", "wav", "m4a"])
 
 if audio_file:
@@ -170,72 +229,97 @@ if audio_file:
         audio_path = tmp.name
 
     try:
-        st.info("🔍 Transcribing audio...")
-        segments, info = whisper_model.transcribe(audio_path)
-        transcript = " ".join([seg.text for seg in segments])
+        # Transcription
+        with st.spinner("🔍 Transcribing audio..."):
+            segments, info = whisper_model.transcribe(audio_path)
+            transcript = " ".join([seg.text for seg in segments])
 
         st.subheader("📝 Transcription")
-        st.write(transcript)
+        with st.expander("View full transcript", expanded=True):
+            st.write(transcript)
 
-        st.info("🧠 Extracting medical entities...")
-        entities = extract_entities(transcript)
+        # Entity Extraction
+        with st.spinner("🧠 Extracting medical entities..."):
+            entities = extract_entities(transcript)
         
         st.subheader("🔍 Extracted Entities")
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.write("**Drugs:**")
-            st.write(entities.get("drugs", []))
+            st.metric("Drugs Found", len(entities.get("drugs", [])))
+            if entities.get("drugs"):
+                for drug in entities["drugs"]:
+                    st.success(f"💊 {drug}")
         with col2:
-            st.write("**Indications:**")
-            st.write(entities.get("indications", []))
+            st.metric("Indications Found", len(entities.get("indications", [])))
+            if entities.get("indications"):
+                for indi in entities["indications"]:
+                    st.info(f"🏥 {indi}")
         with col3:
-            st.write("**Reactions:**")
-            st.write(entities.get("reactions", []))
+            st.metric("Reactions Found", len(entities.get("reactions", [])))
+            if entities.get("reactions"):
+                for react in entities["reactions"]:
+                    st.warning(f"⚠️ {react}")
 
-        st.info("⚙️ Building features...")
-        feature_rows = build_features(entities)
+        # Feature Building
+        with st.spinner("⚙️ Building features..."):
+            feature_rows = build_features(entities)
 
         if not feature_rows:
             st.error("❌ No known drugs detected from the valid drug list.")
+            st.info("The extracted drugs must match the drugs in the trained model.")
             st.stop()
 
         X = pd.DataFrame(feature_rows)[FEATURE_ORDER]
         
-        st.subheader("📋 Feature Matrix")
-        st.dataframe(X)
+        with st.expander("📋 View Feature Matrix"):
+            st.dataframe(X, use_container_width=True)
 
-        st.info("🤖 Predicting severity...")
-        preds = model.predict(X)
-        proba = model.predict_proba(X)
+        # Prediction
+        with st.spinner("🤖 Predicting severity..."):
+            preds = model.predict(X)
+            proba = model.predict_proba(X)
 
-        st.success("✅ Prediction complete")
+        st.success("✅ Prediction Complete!")
         
         # Display results
         st.subheader("📊 Severity Predictions")
         
+        severity_map = {0: "Low", 1: "Medium", 2: "High"}
+        severity_colors = {0: "🟢", 1: "🟡", 2: "🔴"}
+        
         for idx, (drug, pred, prob) in enumerate(zip(entities["drugs"], preds, proba)):
-            severity_map = {0: "Low", 1: "Medium", 2: "High"}
             severity = severity_map.get(pred, "Unknown")
+            severity_icon = severity_colors.get(pred, "⚪")
             confidence = prob[pred] * 100
             
-            col1, col2, col3 = st.columns([2, 1, 2])
-            with col1:
-                st.write(f"**Drug:** {drug}")
-            with col2:
-                st.write(f"**Severity:** {severity}")
-            with col3:
-                st.write(f"**Confidence:** {confidence:.1f}%")
-            
-            # Show probability distribution
-            st.write("Probability distribution:")
-            prob_df = pd.DataFrame({
-                'Severity': ['Low', 'Medium', 'High'],
-                'Probability': prob[idx]
-            })
-            st.bar_chart(prob_df.set_index('Severity'))
             st.divider()
+            
+            col1, col2 = st.columns([1, 2])
+            
+            with col1:
+                st.markdown(f"### {severity_icon} {drug}")
+                st.metric("Predicted Severity", severity)
+                st.metric("Confidence", f"{confidence:.1f}%")
+            
+            with col2:
+                st.write("**Probability Distribution:**")
+                prob_df = pd.DataFrame({
+                    'Severity': ['Low', 'Medium', 'High'],
+                    'Probability': [prob[idx][0], prob[idx][1], prob[idx][2]]
+                })
+                st.bar_chart(prob_df.set_index('Severity'), height=200)
+    
+    except Exception as e:
+        st.error(f"❌ An error occurred: {str(e)}")
+        import traceback
+        with st.expander("View error details"):
+            st.code(traceback.format_exc())
     
     finally:
         # Clean up temp file
         if os.path.exists(audio_path):
             os.unlink(audio_path)
+
+# Footer
+st.divider()
+st.caption("⚠️ This tool is for research purposes only. Always consult healthcare professionals for medical decisions.")

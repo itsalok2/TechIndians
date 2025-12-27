@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  streamlit-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medical-audio-detector
+    ports:
+      - "8501:8501"
+    volumes:
+      # Mount data folder for accessing audio files
+      - ./data:/app/data
+      # Mount models folder if you want to update models without rebuilding
+      - ./models:/app/models
+      # Optional: Mount .env for easy updates
+      - ./.env:/app/.env
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
