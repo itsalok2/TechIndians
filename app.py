@@ -2,9 +2,9 @@ import streamlit as st
 import whisper
 import tempfile
 from deep_translator import GoogleTranslator
-from symptoms_list import symptoms
-from drug_list import drugs
-from severity_rules import high_risk_symptoms, moderate_risk_symptoms, high_risk_drugs, moderate_risk_drugs
+from important_attritubes_info.symptoms_list import symptoms
+from important_attritubes_info.drug_list import drugs
+from important_attritubes_info.severity_rules import high_risk_symptoms, moderate_risk_symptoms, high_risk_drugs, moderate_risk_drugs
 
 # Custom CSS for beautiful cards
 card_style = """
