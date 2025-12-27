@@ -1,6 +1,13 @@
 # TechIndians
 Use case 1 – Adverse medical event prediction from a phone call 
 
+Figma Links : 
+
+LOGO: https://pen-bloom-84070585.figma.site/
+
+INFORMATION ARCHITECTURE: https://cat-floral-16728185.figma.site/
+
+INTERFACE SCREENS: https://fence-font-64529008.figma.site/
 
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/35263db2-caf9-4be0-bd3a-8b8646d258c1" />
 

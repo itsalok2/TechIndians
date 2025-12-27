@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "techindians"
+version = "0.1.0"
+description = "My ML project"
+authors = [{name="Alok"},
+           {name="Divija"},
+           {name="Vinit"}]
+dependencies = []
