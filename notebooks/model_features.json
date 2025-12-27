@@ -1,0 +1,14 @@
+[
+    "prod_ai_encoded",
+    "indi_pt_encoded",
+    "role_cod_encoded",
+    "drug_frequency",
+    "drug_avg_severity",
+    "num_drugs",
+    "num_reactions",
+    "treatment_duration",
+    "dechal_binary",
+    "is_primary_suspect",
+    "is_secondary_suspect",
+    "is_concomitant"
+]
