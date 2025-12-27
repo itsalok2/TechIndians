@@ -5,6 +5,10 @@
 
 A short demo video is available here:
 
+### Report:
+
+https://drive.google.com/file/d/1OzKF5sYGhOnGYjdyu3U-HpQPO_jxT_FR/view?usp=sharing
+
 ### Problem Statement:
 
 Millions of phone conversations occur daily between patients and nurses regarding medications and health conditions. Often, early signs of adverse medical events go unnoticed.
