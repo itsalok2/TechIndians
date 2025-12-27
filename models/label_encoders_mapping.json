@@ -1,0 +1,226 @@
+{
+    "prod_ai": {
+        "0": "ACETAMINOPHEN",
+        "1": "ADALIMUMAB",
+        "2": "CARBIDOPA\\LEVODOPA",
+        "3": "DEXAMETHASONE",
+        "4": "EFAVIRENZ\\EMTRICITABINE\\TENOFOVIR DISOPROXIL FUMARATE",
+        "5": "EMTRICITABINE\\TENOFOVIR DISOPROXIL FUMARATE",
+        "6": "ESOMEPRAZOLE MAGNESIUM",
+        "7": "FUROSEMIDE",
+        "8": "IBRUTINIB",
+        "9": "INFLIXIMAB-DYYB",
+        "10": "LANSOPRAZOLE",
+        "11": "LENALIDOMIDE",
+        "12": "MACITENTAN",
+        "13": "NIVOLUMAB",
+        "14": "OCTREOTIDE ACETATE",
+        "15": "OMALIZUMAB",
+        "16": "OMEPRAZOLE MAGNESIUM",
+        "17": "PREDNISOLONE",
+        "18": "PREDNISONE",
+        "19": "RANITIDINE",
+        "20": "RANITIDINE HYDROCHLORIDE",
+        "21": "RIBOCICLIB",
+        "22": "RITUXIMAB",
+        "23": "RIVAROXABAN",
+        "24": "RUXOLITINIB",
+        "25": "SECUKINUMAB",
+        "26": "TENOFOVIR DISOPROXIL FUMARATE",
+        "27": "TOCILIZUMAB",
+        "28": "TOFACITINIB CITRATE",
+        "29": "VEDOLIZUMAB"
+    },
+    "indi_pt": {
+        "0": "Abdominal discomfort",
+        "1": "Acromegaly",
+        "2": "Ankylosing spondylitis",
+        "3": "Asthma",
+        "4": "Atrial fibrillation",
+        "5": "Breast cancer",
+        "6": "Breast cancer metastatic",
+        "7": "Carcinoid tumour",
+        "8": "Chronic lymphocytic leukaemia",
+        "9": "Chronic spontaneous urticaria",
+        "10": "Colitis ulcerative",
+        "11": "Crohn's disease",
+        "12": "Diffuse large B-cell lymphoma",
+        "13": "Dyspepsia",
+        "14": "Gastric ulcer",
+        "15": "Gastrooesophageal reflux disease",
+        "16": "HIV infection",
+        "17": "Malignant melanoma",
+        "18": "Myelofibrosis",
+        "19": "Neuroendocrine tumour",
+        "20": "Pain",
+        "21": "Parkinson's disease",
+        "22": "Plasma cell myeloma",
+        "23": "Polycythaemia vera",
+        "24": "Premedication",
+        "25": "Prophylaxis",
+        "26": "Psoriasis",
+        "27": "Psoriatic arthropathy",
+        "28": "Pulmonary arterial hypertension",
+        "29": "Rheumatoid arthritis"
+    },
+    "pt": {
+        "0": "Acute kidney injury",
+        "1": "Anxiety",
+        "2": "Arthralgia",
+        "3": "Bladder cancer",
+        "4": "Bone density decreased",
+        "5": "Bone loss",
+        "6": "Breast cancer",
+        "7": "Chronic kidney disease",
+        "8": "Colorectal cancer",
+        "9": "Diarrhoea",
+        "10": "Dyspnoea",
+        "11": "End stage renal disease",
+        "12": "Fatigue",
+        "13": "Gastric cancer",
+        "14": "Hepatic cancer",
+        "15": "Lung neoplasm malignant",
+        "16": "Multiple fractures",
+        "17": "Nausea",
+        "18": "Neoplasm malignant",
+        "19": "Oesophageal carcinoma",
+        "20": "Osteonecrosis",
+        "21": "Osteoporosis",
+        "22": "Pain",
+        "23": "Pancreatic carcinoma",
+        "24": "Pneumonia",
+        "25": "Prostate cancer",
+        "26": "Renal cancer",
+        "27": "Renal failure",
+        "28": "Renal injury",
+        "29": "Skeletal injury"
+    },
+    "role_cod": {
+        "0": "C",
+        "1": "I",
+        "2": "PS",
+        "3": "SS"
+    },
+    "drug_stats": {
+        "14": {
+            "drug_frequency": 15710,
+            "drug_avg_severity": 2.0034373010821134
+        },
+        "11": {
+            "drug_frequency": 11959,
+            "drug_avg_severity": 2.3808846893552973
+        },
+        "3": {
+            "drug_frequency": 8488,
+            "drug_avg_severity": 2.760367577756833
+        },
+        "15": {
+            "drug_frequency": 13725,
+            "drug_avg_severity": 1.9283788706739526
+        },
+        "6": {
+            "drug_frequency": 80291,
+            "drug_avg_severity": 2.0326188489369916
+        },
+        "0": {
+            "drug_frequency": 12061,
+            "drug_avg_severity": 2.2004808888151897
+        },
+        "20": {
+            "drug_frequency": 351283,
+            "drug_avg_severity": 1.442756979415457
+        },
+        "19": {
+            "drug_frequency": 237767,
+            "drug_avg_severity": 1.4679833618626639
+        },
+        "5": {
+            "drug_frequency": 113292,
+            "drug_avg_severity": 1.2130159234544364
+        },
+        "10": {
+            "drug_frequency": 40160,
+            "drug_avg_severity": 2.0461155378486056
+        },
+        "16": {
+            "drug_frequency": 68837,
+            "drug_avg_severity": 2.056728213024972
+        },
+        "28": {
+            "drug_frequency": 11092,
+            "drug_avg_severity": 1.7015867291741795
+        },
+        "1": {
+            "drug_frequency": 26206,
+            "drug_avg_severity": 1.9148286651911777
+        },
+        "29": {
+            "drug_frequency": 10518,
+            "drug_avg_severity": 1.6746529758509223
+        },
+        "22": {
+            "drug_frequency": 4926,
+            "drug_avg_severity": 2.3286642306130734
+        },
+        "23": {
+            "drug_frequency": 1687,
+            "drug_avg_severity": 3.3117960877296975
+        },
+        "24": {
+            "drug_frequency": 5890,
+            "drug_avg_severity": 2.039388794567063
+        },
+        "27": {
+            "drug_frequency": 6082,
+            "drug_avg_severity": 1.964978625452154
+        },
+        "25": {
+            "drug_frequency": 15871,
+            "drug_avg_severity": 1.883561212273959
+        },
+        "17": {
+            "drug_frequency": 1161,
+            "drug_avg_severity": 2.615848406546081
+        },
+        "12": {
+            "drug_frequency": 11071,
+            "drug_avg_severity": 2.828922409899738
+        },
+        "7": {
+            "drug_frequency": 845,
+            "drug_avg_severity": 3.0307692307692307
+        },
+        "13": {
+            "drug_frequency": 3140,
+            "drug_avg_severity": 2.634076433121019
+        },
+        "18": {
+            "drug_frequency": 3160,
+            "drug_avg_severity": 2.3645569620253166
+        },
+        "9": {
+            "drug_frequency": 13056,
+            "drug_avg_severity": 1.555453431372549
+        },
+        "2": {
+            "drug_frequency": 5995,
+            "drug_avg_severity": 2.447372810675563
+        },
+        "21": {
+            "drug_frequency": 9049,
+            "drug_avg_severity": 2.3886617305779643
+        },
+        "26": {
+            "drug_frequency": 111031,
+            "drug_avg_severity": 1.1812196593744089
+        },
+        "4": {
+            "drug_frequency": 61219,
+            "drug_avg_severity": 1.1908394452702593
+        },
+        "8": {
+            "drug_frequency": 5261,
+            "drug_avg_severity": 2.134575175822087
+        }
+    }
+}
