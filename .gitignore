@@ -214,5 +214,7 @@ ther_21q3
 faers_ascii21/*
 faers_ascii20/*
 
-faers_ascii_2012Q2/
+# FAERS raw data (never commit)
+faers_ascii_*/
 *.txt
+
