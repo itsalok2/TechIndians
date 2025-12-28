@@ -3,7 +3,11 @@
 
 ### Demo Video:
 
-A short demo video is available here:
+A short demo video is available here: https://drive.google.com/drive/folders/1eXCgKHPtI6KKIT5aLd_7BWsGAaGjDD4d?usp=sharing
+
+### Report:
+
+https://drive.google.com/file/d/1OzKF5sYGhOnGYjdyu3U-HpQPO_jxT_FR/view?usp=sharing
 
 ### Problem Statement:
 
