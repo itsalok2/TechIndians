@@ -92,10 +92,42 @@ llm = ChatGoogleGenerativeAI(
 prompt = PromptTemplate(
     template="""
 You are a medical information extractor.
+You'll be getting a transcribed text from a audio file and your task is to get the drugs which are present in the text 
+how many drugs are there and from the conversation you have to find the indication point and the reactions,
+These drugs indication point and reaction are the columns of my data on which my model is trained so I have to make inference 
+Based on these points which you give to me.
 
-Extract ONLY items present in BOTH:
-1. The conversation
-2. The provided lists
+I am giving you the list of drugs which I am using and the reaction and the 
+indication point on which my model is trained you have to infer from the text file and you have to find out if they exist in the 
+given list or not I am giving you the list
+
+drug list: [
+
+"ACETAMINOPHEN","ADALIMUMAB","CARBIDOPA\\LEVODOPA","DEXAMETHASONE","EFAVIRENZ\\EMTRICITABINE\\TENOFOVIR DISOPROXIL FUMARATE",
+"EMTRICITABINE\\TENOFOVIR DISOPROXIL FUMARATE","ESOMEPRAZOLE MAGNESIUM","FUROSEMIDE","IBRUTINIB","INFLIXIMAB-DYYB","LANSOPRAZOLE",
+"LENALIDOMIDE","MACITENTAN","NIVOLUMAB","OCTREOTIDE ACETATE","OMALIZUMAB","OMEPRAZOLE MAGNESIUM","PREDNISOLONE","PREDNISONE","RANITIDINE",
+"RANITIDINE HYDROCHLORIDE","RIBOCICLIB","RITUXIMAB","RIVAROXABAN","RUXOLITINIB","SECUKINUMAB","TENOFOVIR DISOPROXIL FUMARATE","TOCILIZUMAB",
+"TOFACITINIB CITRATE","VEDOLIZUMAB"
+
+]
+
+indication point list: [
+
+"Abdominal discomfort","Acromegaly","Ankylosing spondylitis","Asthma","Atrial fibrillation","Breast cancer","Breast cancer metastatic",
+"Carcinoid tumour","Chronic lymphocytic leukaemia","Chronic spontaneous urticaria","Colitis ulcerative","Crohn's disease",
+"Diffuse large B-cell lymphoma","Dyspepsia","Gastric ulcer","Gastrooesophageal reflux disease","HIV infection","Malignant melanoma",
+"Myelofibrosis","Neuroendocrine tumour", "Pain","Parkinson's disease","Plasma cell myeloma","Polycythaemia vera","Premedication",
+"Prophylaxis","Psoriasis","Psoriatic arthropathy","Pulmonary arterial hypertension","Rheumatoid arthritis"
+
+]
+
+reaction: [
+
+"Acute kidney injury","Anxiety","Arthralgia","Bladder cancer","Bone density decreased","Bone loss","Breast cancer","Chronic kidney disease",
+"Colorectal cancer","Diarrhoea","Dyspnoea","End stage renal disease","Fatigue","Gastric cancer","Hepatic cancer","Lung neoplasm malignant",
+"Multiple fractures","Nausea","Neoplasm malignant","Oesophageal carcinoma","Osteonecrosis","Osteoporosis","Pain","Pancreatic carcinoma",
+"Pneumonia","Prostate cancer","Renal cancer","Renal failure","Renal injury","Skeletal injury"
+]
 
 Return strict JSON:
 {{
@@ -305,7 +337,7 @@ if audio_file:
                 st.write("**Probability Distribution:**")
                 prob_df = pd.DataFrame({
                     'Severity': ['Low', 'Medium', 'High'],
-                    'Probability': [prob[idx][0], prob[idx][1], prob[idx][2]]
+                    'Probability': [prob[0], prob[1], prob[2]]
                 })
                 st.bar_chart(prob_df.set_index('Severity'), height=200)
     
